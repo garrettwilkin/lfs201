@@ -26,6 +26,7 @@
 void (sig_handler) (int);
 
 int sig_count[NUMSIGS + 1];	/* counter for signals received */
+int sig_send = 3;
 volatile static int line = 0;
 volatile int signumbuf[6400], sigcountbuf[6400];
 
@@ -33,7 +34,7 @@ int main(int argc, char *argv[])
 {
 	sigset_t sigmask_new, sigmask_old;
 	struct sigaction sigact, oldact;
-	int signum, rc, i;
+	int signum, rc, i, sent;
 	pid_t pid;
 
 	pid = getpid();
@@ -64,9 +65,9 @@ int main(int argc, char *argv[])
 		}
 		sigaction(signum, &sigact, &oldact);
 		/* send the signal 3 times! */
-		rc = raise(signum);
-		rc = raise(signum);
-		rc = raise(signum);
+        for(sent = 0; sent < sig_send; sent++) {
+            rc = raise(signum);
+        }
 		if (rc) {
 			printf("Failed on Signal %d\n", signum);
 		} else {
@@ -84,6 +85,15 @@ int main(int argc, char *argv[])
 	printf("--------------------------------------------\n");
 	for (i = 1; i <= NUMSIGS; i++) {
 		printf("%4d:%3d  ", i, sig_count[i]);
+		if (i % 8 == 0)
+			printf("\n");
+	}
+	printf("\n");
+
+	printf("\nSignal  Name(Times Processed)\n");
+	printf("--------------------------------------------\n");
+	for (i = 1; i <= NUMSIGS; i++) {
+		printf("%25s:%3d  ", strsignal(i), sig_count[i]);
 		if (i % 8 == 0)
 			printf("\n");
 	}
