@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
 	printf("--------------------------------------------\n");
 	for (i = 1; i <= NUMSIGS; i++) {
 		printf("%25s:%3d  ", strsignal(i), sig_count[i]);
-		if (i % 8 == 0)
+		if (i % 4 == 0)
 			printf("\n");
 	}
 	printf("\n");
@@ -106,6 +106,16 @@ int main(int argc, char *argv[])
 			printf("\n");
 		printf("%4d(%1d)", signumbuf[i], sigcountbuf[i]);
 	}
+    printf("\n");
+
+    printf("\nHistory: Signal  Name-Number(Count Processed)\n");
+    printf("--------------------------------------------\n");
+    for (i = 0; i < line; i++) {
+        if (i % 4 == 0)
+            printf("\n");
+        printf("%28s-%2d(%1d)", strsignal(signumbuf[i]),signumbuf[i], sigcountbuf[i]);
+    }
+
 	printf("\n");
 	exit(EXIT_SUCCESS);
 }
